@@ -1,24 +1,128 @@
 import * as THREE from 'three';
+import * as CANNON from 'cannon-es';
+import { scene, world, rooms, collectibles } from './world.js';
 
-let collectibleMesh, collectibleBody;
+const textureLoader = new THREE.TextureLoader();
+const doubleJumpTexture = textureLoader.load('path/to/your/double_jump_texture.jpg');
 
 export function setupCollectibles(scene) {
-    const collectible = new THREE.Mesh(
-        new THREE.SphereGeometry(0.5, 16, 16),
-        new THREE.MeshBasicMaterial({ color: 0xff0000 })
-    );
-    collectible.position.set(2, 1, -3);
-    scene.add(collectible);
 
-    return [collectible];
+    collectibles.forEach(collectible => {
+        scene.remove(collectible.mesh);
+        if (collectible.body && world.has(collectible.body)) {
+            world.removeBody(collectible.body);
+        }
+    });
+    collectibles.length = 0;
+
+    const startRoom = rooms.find(room => room.isStartRoom);
+    if (!startRoom) return collectibles;
+
+    // Get rooms connected to the start room but exclude the start room itself
+    const connectedRooms = startRoom.connections.filter(room => room !== startRoom && !room.isStartRoom);
+
+    // Fall back: if no proper connected room, exit early
+    if (connectedRooms.length === 0) {
+        console.warn('No valid connected rooms found (excluding start room)');
+        return collectibles;
+    }
+
+    // Pick one connected room
+    const connectedRoom = connectedRooms[Math.floor(Math.random() * connectedRooms.length)];
+
+    // Clear collectible flags
+    connectedRoom.platforms.forEach(platform => {
+        platform.mesh.userData.hasCollectible = false;
+    });
+
+    // Find a usable platform
+    const suitablePlatforms = connectedRoom.platforms.filter(platform =>
+        platform.size.x >= 2 &&
+        platform.size.z >= 2 &&
+        platform.mesh.position.y < 5 &&
+        !platform.mesh.userData.hasCollectible
+    );
+
+    let platform;
+    let position;
+
+    if (suitablePlatforms.length > 0) {
+        platform = suitablePlatforms[Math.floor(Math.random() * suitablePlatforms.length)];
+        position = new THREE.Vector3(
+            platform.mesh.position.x,
+            platform.mesh.position.y + platform.size.y / 2 + 0.5,
+            platform.mesh.position.z
+        );
+    } else {
+        const platformPosition = new THREE.Vector3(
+            connectedRoom.x,
+            2,
+            connectedRoom.z
+        );
+        const platformSize = new THREE.Vector3(3, 0.5, 3);
+        platform = createPlatform(platformPosition, platformSize, platformTexture);
+        connectedRoom.platforms.push(platform);
+
+        position = new THREE.Vector3(
+            platformPosition.x,
+            platformPosition.y + platformSize.y / 2 + 0.5,
+            platformPosition.z
+        );
+    }
+
+    const collectible = createDoubleJumpCollectible(position);
+    collectibles.push(collectible);
+    platform.mesh.userData.hasCollectible = true;
+
+    return collectibles;
+}
+
+
+// ... rest of your collectibles.js code remains the same ...
+
+function createDoubleJumpCollectible(position) {
+    const geometry = new THREE.SphereGeometry(0.5, 16, 16);
+    const material = new THREE.MeshStandardMaterial({ 
+        map: doubleJumpTexture,
+        emissive: 0x00ffff,
+        emissiveIntensity: 0.5,
+        roughness: 0.3,
+        metalness: 0.8
+    });
+    const mesh = new THREE.Mesh(geometry, material);
+    mesh.position.copy(position);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+    mesh.userData.isDoubleJumpCollectible = true;
+    scene.add(mesh);
+
+    const body = new CANNON.Body({
+        mass: 0,
+        shape: new CANNON.Sphere(0.5),
+        position: new CANNON.Vec3(position.x, position.y, position.z),
+        isCollectible: true
+    });
+    world.addBody(body);
+
+    return { mesh, body };
 }
 
 export function updateCollectibles(player, collectibles) {
-    collectibles.forEach(collectible => {
-        let distance = player.body.position.distanceTo(collectible.position);
-        if (distance < 1) {  // If the player is close enough to the collectible
-            collectible.visible = false;  // Hide the collectible when picked up
-            player.canDoubleJump = true;  // Grant the double jump ability
+    for (let i = collectibles.length - 1; i >= 0; i--) {
+        const collectible = collectibles[i];
+        
+        // Check for collision with player
+        if (collectible.body.position.distanceTo(player.body.position) < 1.5) {
+            // Apply double jump ability to player
+            player.canDoubleJump = true;
+            
+            // Remove collectible
+            scene.remove(collectible.mesh);
+            world.removeBody(collectible.body);
+            collectibles.splice(i, 1);
+            
+            // Optional: Show a message
+            console.log("Double jump acquired at position:", player.body.position);
         }
-    });
+    }
 }
