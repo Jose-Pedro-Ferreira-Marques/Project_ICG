@@ -1,6 +1,6 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
-
+import {playGrappleSound} from './sounds.js'
 let grappling = false;
 let ropeConstraint = null;
 let grapplePoint = new CANNON.Vec3();
@@ -61,6 +61,7 @@ function attemptGrapple(scene, camera, playerBody, world, grapplePoints) {
     if (intersects.length > 0) {
         grapplePoint.copy(intersects[0].point);
         grappling = true;
+        playGrappleSound(); // Add this line
 
         // Create a static body at the grapple point
         const staticBody = new CANNON.Body({ mass: 0 });

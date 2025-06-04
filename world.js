@@ -5,6 +5,8 @@ import { generateBasicRoom,addCoinToRoom} from './generateRoom.js';
 import { showWinMenu } from './menu.js';
 import {setupCollectibles} from './collectibles.js'
 import { player } from './main.js';
+
+import {playCoinPickupSound} from'./sounds.js'
 // Scene setup
 export const scene = new THREE.Scene();
 scene.background = new THREE.Color(0x87CEEB);
@@ -281,6 +283,7 @@ export function checkCoinCollision(playerBody) {
             coins.splice(i, 1);
             
             collectedCoins++;
+            playCoinPickupSound(); // Add this line to play the sound
             showGameMessage(`Coin collected! (${collectedCoins}/${requiredCoins})`, 1500);
             updateCoinCounter();
             

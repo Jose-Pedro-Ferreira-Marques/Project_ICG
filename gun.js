@@ -2,13 +2,20 @@ import * as THREE from 'three';
 
 export function createGun(scene, camera) {
     const textureLoader = new THREE.TextureLoader();
-    const gunTexture = textureLoader.load('images/transferir.png');
+    const gunTexture = textureLoader.load('images/textures/corrugated_iron_03_diff_4k.jpg');
+    const handletexture = textureLoader.load('images/textures/wooden_gate_diff_4k.jpg');
     
     const gunMaterial = new THREE.MeshStandardMaterial({ 
         map: gunTexture, 
+        metalness: 0.4, 
+        roughness: 1.0 
+    });
+    const hanleMaterial = new THREE.MeshStandardMaterial({ 
+        map: handletexture, 
         metalness: 0.8, 
         roughness: 0.4 
     });
+
 
     // Gun Barrel
     const barrelGeometry = new THREE.BoxGeometry(0.3, 0.2, 1);
@@ -17,7 +24,7 @@ export function createGun(scene, camera) {
 
     // Gun Handle
     const handleGeometry = new THREE.BoxGeometry(0.2, 0.4, 0.2);
-    const handle = new THREE.Mesh(handleGeometry, gunMaterial);
+    const handle = new THREE.Mesh(handleGeometry, hanleMaterial);
     handle.position.set(0.3, -0.5, -1.3);
     handle.rotation.x = Math.PI / 8;
 

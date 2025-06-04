@@ -1,7 +1,7 @@
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { scene, world, rooms, collectibles } from './world.js';
-
+import { playCollectibleSound } from './sounds.js';
 const textureLoader = new THREE.TextureLoader();
 const doubleJumpTexture = textureLoader.load('path/to/your/double_jump_texture.jpg');
 
@@ -111,17 +111,15 @@ export function updateCollectibles(player, collectibles) {
     for (let i = collectibles.length - 1; i >= 0; i--) {
         const collectible = collectibles[i];
         
-        // Check for collision with player
         if (collectible.body.position.distanceTo(player.body.position) < 1.5) {
-            // Apply double jump ability to player
             player.canDoubleJump = true;
             
-            // Remove collectible
             scene.remove(collectible.mesh);
             world.removeBody(collectible.body);
             collectibles.splice(i, 1);
             
-            // Optional: Show a message
+            playCollectibleSound(); // Add this line
+            
             console.log("Double jump acquired at position:", player.body.position);
         }
     }
