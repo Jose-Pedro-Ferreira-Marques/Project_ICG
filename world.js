@@ -13,20 +13,20 @@ scene.background = new THREE.Color(0x87CEEB);
 export const collectibles = [];
 // Load textures
 const textureLoader = new THREE.TextureLoader();
-const platformTexture = textureLoader.load('public/images/textures/granite_tile_diff_4k.jpg');
+const platformTexture = textureLoader.load('./public/images/textures/granite_tile_diff_4k.jpg');
 platformTexture.wrapS = platformTexture.wrapT = THREE.RepeatWrapping;
 platformTexture.repeat.set(4, 4);
 
-const goaltexture = textureLoader.load('public/images/textures/granite_tile_diff_4k.jpg')
+const goaltexture = textureLoader.load('./public/images/textures/granite_tile_diff_4k.jpg')
 goaltexture.wrapS = goaltexture.wrapT = THREE.RepeatWrapping;
 goaltexture.repeat.set(4,4);
 const flagTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); // example texture
 
-const wallTexture = textureLoader.load('public/images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = textureLoader.load('./public/images/textures/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
-const doorTexture = textureLoader.load('public/images/textures/wooden_gate_diff_4k.jpg');
+const doorTexture = textureLoader.load('./public/images/textures/wooden_gate_diff_4k.jpg');
 doorTexture.wrapS = doorTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
