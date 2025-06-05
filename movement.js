@@ -93,10 +93,10 @@ export function checkIfOnGround(player) {
         }
         canJump = true;
         hasDoubleJumped = false;
-        player.isOnGround = true; // Add this flag
+        player.isOnGround = true; 
     } else {
         canJump = false;
-        player.isOnGround = false; // Add this flag
+        player.isOnGround = false; 
     }
 }
 
@@ -137,7 +137,6 @@ export function updateMovement(camera, player, renderer) {
             player.body.velocity.x = moveDirection.x;
             player.body.velocity.z = moveDirection.z;
             
-            // Only play footsteps when actually on ground
             if (player.isOnGround) {
                 startFootsteps();
             } else {

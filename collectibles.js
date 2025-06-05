@@ -18,24 +18,19 @@ export function setupCollectibles(scene) {
     const startRoom = rooms.find(room => room.isStartRoom);
     if (!startRoom) return collectibles;
 
-    // Get rooms connected to the start room but exclude the start room itself
     const connectedRooms = startRoom.connections.filter(room => room !== startRoom && !room.isStartRoom);
 
-    // Fall back: if no proper connected room, exit early
     if (connectedRooms.length === 0) {
         console.warn('No valid connected rooms found (excluding start room)');
         return collectibles;
     }
 
-    // Pick one connected room
     const connectedRoom = connectedRooms[Math.floor(Math.random() * connectedRooms.length)];
 
-    // Clear collectible flags
     connectedRoom.platforms.forEach(platform => {
         platform.mesh.userData.hasCollectible = false;
     });
 
-    // Find a usable platform
     const suitablePlatforms = connectedRoom.platforms.filter(platform =>
         platform.size.x >= 2 &&
         platform.size.z >= 2 &&
@@ -78,7 +73,6 @@ export function setupCollectibles(scene) {
 }
 
 
-// ... rest of your collectibles.js code remains the same ...
 
 function createDoubleJumpCollectible(position) {
     const geometry = new THREE.SphereGeometry(0.5, 16, 16);
@@ -118,7 +112,7 @@ export function updateCollectibles(player, collectibles) {
             world.removeBody(collectible.body);
             collectibles.splice(i, 1);
             
-            playCollectibleSound(); // Add this line
+            playCollectibleSound(); 
             
             console.log("Double jump acquired at position:", player.body.position);
         }

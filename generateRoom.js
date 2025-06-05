@@ -1,43 +1,37 @@
-// generateRoom.js
 import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { createPlatform, createGrapplePoint, createCoin, platforms ,requiredCoins} from './world.js';
 
-const platformTexture = new THREE.TextureLoader().load('./images/textures/granite_tile_diff_4k.jpg');
+const platformTexture = new THREE.TextureLoader().load('public/images/textures/granite_tile_diff_4k.jpg');
 platformTexture.wrapS = platformTexture.wrapT = THREE.RepeatWrapping;
 platformTexture.repeat.set(4, 4);
 
-const wallTexture = new THREE.TextureLoader().load('./images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = new THREE.TextureLoader().load('public/images/textures/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
 export const basicRoomTemplates = [
-    // Template 1: Simple platform layout
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Left platform
         platforms.push(createPlatform(
             new THREE.Vector3(room.x - room.width/3, 2, room.z),
             new THREE.Vector3(4, 0.5, 4),
             platformTexture
         ));
         
-        // Right platform
         platforms.push(createPlatform(
             new THREE.Vector3(room.x + room.width/3, 4, room.z),
             new THREE.Vector3(4, 0.5, 4),
             platformTexture
         ));
         
-        // Grapple point in center
        
         
         return platforms;
@@ -45,25 +39,21 @@ export const basicRoomTemplates = [
     
     
     
-    // Template 3: Central tower with surrounding platforms
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Central tower
         platforms.push(createPlatform(
             new THREE.Vector3(room.x, 4, room.z),
             new THREE.Vector3(3, 0.5, 3),
             platformTexture
         ));
         
-        // Surrounding platforms
         const positions = [
             { x: -room.width/3, z: 0 },
             { x: room.width/3, z: 0 },
@@ -79,31 +69,26 @@ export const basicRoomTemplates = [
             ));
         });
         
-        // Grapple points
-        createGrapplePoint(new THREE.Vector3(room.x, 6, room.z));
-        createGrapplePoint(new THREE.Vector3(room.x + room.width/3, 3, room.z));
+      
         
         return platforms;
     },
     
-    // Template 4: Platform maze
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create a grid of platforms
         const gridSize = 3;
         const spacing = room.width / (gridSize + 1);
         
         for (let i = 0; i < gridSize; i++) {
             for (let j = 0; j < gridSize; j++) {
-                if (Math.random() > 0.3) { // 70% chance to create a platform
+                if (Math.random() > 0.3) { 
                     const height = 1 + Math.floor(Math.random() * 3);
                     platforms.push(createPlatform(
                         new THREE.Vector3(
@@ -118,13 +103,7 @@ export const basicRoomTemplates = [
             }
         }
         
-        // Grapple points
-        createGrapplePoint(new THREE.Vector3(
-            room.x - room.width/3, 5, room.z - room.depth/3
-        ));
-        createGrapplePoint(new THREE.Vector3(
-            room.x + room.width/3, 5, room.z + room.depth/3
-        ));
+        
         
         return platforms;
     },
@@ -132,14 +111,12 @@ export const basicRoomTemplates = [
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create 4 floating islands at different heights
         const positions = [
             { x: -room.width/3, z: -room.depth/3, y: 3 },
             { x: room.width/3, z: -room.depth/3, y: 5 },
@@ -155,25 +132,21 @@ export const basicRoomTemplates = [
             ));
         });
         
-        // Grapple points between islands
         createGrapplePoint(new THREE.Vector3(room.x, 4, room.z));
         createGrapplePoint(new THREE.Vector3(room.x, 7, room.z));
         
         return platforms;
     },
 
-    // New Template 2: Zig-Zag Path
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create a zig-zag path upwards
         const steps = 5;
         const stepHeight = 1.5;
         const stepLength = 3;
@@ -194,17 +167,14 @@ export const basicRoomTemplates = [
             ));
         }
         
-        // Grapple point at end
        
         
         return platforms;
     },
 
-    // New Template 3: Central Pillar with Bridges
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
@@ -213,7 +183,6 @@ export const basicRoomTemplates = [
         
      
         
-        // Bridges to central pillar
         const bridgeDirections = [
             { x: 1, z: 0 },
             { x: -1, z: 0 },
@@ -242,18 +211,15 @@ export const basicRoomTemplates = [
         return platforms;
     },
 
-    // New Template 4: Spiral Tower
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create spiral platforms
         const levels = 6;
         const radius = room.width/3;
         
@@ -269,7 +235,6 @@ export const basicRoomTemplates = [
             ));
         }
         
-        // Grapple point at top
         createGrapplePoint(new THREE.Vector3(
             room.x,
             1 + (levels * 1.5) + 2,
@@ -279,24 +244,20 @@ export const basicRoomTemplates = [
         return platforms;
     },
 
-    // New Template 5: Platform Grid with Gaps
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create a grid of platforms with gaps
         const gridSize = 4;
         const cellSize = room.width / (gridSize + 1);
         
         for (let i = 0; i < gridSize; i++) {
             for (let j = 0; j < gridSize; j++) {
-                // Skip some platforms to create gaps
                 if (Math.random() > 0.4 || (i === 0 && j === 0)) {
                     const height = 1 + Math.random() * 3;
                     platforms.push(createPlatform(
@@ -312,29 +273,20 @@ export const basicRoomTemplates = [
             }
         }
         
-        // Grapple points to help cross gaps
-        createGrapplePoint(new THREE.Vector3(
-            room.x - room.width/4, 5, room.z
-        ));
-        createGrapplePoint(new THREE.Vector3(
-            room.x + room.width/4, 5, room.z
-        ));
+       
         
         return platforms;
     },
 
-    // New Template 6: High Platforms with Ramps
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // High platforms
         const highPlatforms = [
             { x: -room.width/3, z: 0, y: 4 },
             { x: room.width/3, z: 0, y: 6 }
@@ -348,7 +300,6 @@ export const basicRoomTemplates = [
             ));
         });
         
-        // Ramps connecting platforms
         platforms.push(createPlatform(
             new THREE.Vector3(room.x, 2, room.z),
             new THREE.Vector3(room.width/2, 0.5, 1),
@@ -361,29 +312,20 @@ export const basicRoomTemplates = [
             platformTexture
         ));
         
-        // Grapple points
-        createGrapplePoint(new THREE.Vector3(
-            room.x - room.width/3, 7, room.z
-        ));
-        createGrapplePoint(new THREE.Vector3(
-            room.x + room.width/3, 7, room.z
-        ));
+     
         
         return platforms;
     },
 
-    // New Template 7: Vertical Challenge
     (room) => {
         const platforms = [];
         
-        // Main floor
         platforms.push(createPlatform(
             new THREE.Vector3(2, 0, 2),
             new THREE.Vector3(2, 0.5, 2),
             platformTexture
         ));
         
-        // Create a series of small platforms going upwards
         const steps = 8;
         for (let i = 0; i < steps; i++) {
             const offsetX = (i % 2 === 0) ? -room.width/4 : room.width/4;
@@ -400,35 +342,24 @@ export const basicRoomTemplates = [
             ));
         }
         
-        // Grapple points at key positions
-        createGrapplePoint(new THREE.Vector3(
-            room.x, 5, room.z
-        ));
-        createGrapplePoint(new THREE.Vector3(
-            room.x, 9, room.z
-        ));
-        
+       
         return platforms;
     },
 
-    // Add this to your basicRoomTemplates array
 (room) => {
     const platforms = [];
     
-    // Main floor
     platforms.push(createPlatform(
         new THREE.Vector3(2, 0, 2),
         new THREE.Vector3(2, 0.5, 2),
         platformTexture
     ));
     
-    // Central obstacle tower (hollow)
     const towerHeight = 8;
     const towerWidth = 6;
     const towerDepth = 6;
     const wallThickness = 1;
     
-    // Create four walls around the center
     platforms.push(createPlatform(
         new THREE.Vector3(room.x, towerHeight/2, room.z - towerDepth/2),
         new THREE.Vector3(towerWidth, towerHeight, wallThickness),
@@ -450,14 +381,12 @@ export const basicRoomTemplates = [
         wallTexture
     ));
     
-    // Grapple points - one visible when entering, others hidden
     createGrapplePoint(new THREE.Vector3(
         room.x, 
         towerHeight + 2, 
-        room.z + room.depth/3  // Visible from entrance
+        room.z + room.depth/3  
     ));
     
-    // Hidden grapple points (behind walls)
     createGrapplePoint(new THREE.Vector3(
         room.x - room.width/3,
         towerHeight + 1,
@@ -484,18 +413,15 @@ export const basicRoomTemplates = [
 ];
 
 export function generateBasicRoom(room) {
-    // Choose a random template
     const template = basicRoomTemplates[Math.floor(Math.random() * basicRoomTemplates.length)];
     const roomPlatforms = template(room);
     
-    // Add walls and doors based on connections
     addWallsAndDoors(room);
     
     return roomPlatforms;
 }
 function addWallsAndDoors(room) {
-    // Increased wall height from 15 to 20
-    const wallHeight = room.isFinalRoom ? room.height : 20;  // Changed from 15 to 20
+    const wallHeight = room.isFinalRoom ? room.height : 20;  
     const wallThickness = 1;
     const openingWidth = 4;
 
@@ -562,7 +488,6 @@ function addWallsAndDoors(room) {
         }
     });
 
-    // Add walls where there are no connections
     const hasNorthOpening = room.connections.some(r => r.z > room.z);
     const hasSouthOpening = room.connections.some(r => r.z < room.z);
     const hasEastOpening = room.connections.some(r => r.x > room.x);
@@ -604,7 +529,7 @@ export function addCoinToRoom(room, roomPlatforms) {
     const suitablePlatforms = roomPlatforms.filter(platform => 
         platform.size.x >= 3 && 
         platform.size.z >= 3 &&
-        platform.mesh.position.y < 5 &&  // Not too high
+        platform.mesh.position.y < 5 &&  
         !platform.mesh.userData.hasCoin &&
         !platform.mesh.userData.isStart
     );

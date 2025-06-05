@@ -149,7 +149,6 @@ export function setupMenu(camera, renderer) {
     winMenuContainer.style.zIndex = '1000';
     document.body.appendChild(winMenuContainer);
 
-    // ESC key listener
     document.addEventListener('keydown', (event) => {
         if (event.key === 'Escape' && !isDead) {
             toggleMenu(camera, renderer);
@@ -158,7 +157,7 @@ export function setupMenu(camera, renderer) {
 }
 
 export function toggleMenu(camera, renderer) {
-    if (isDead) return; // Don't allow pausing when dead
+    if (isDead) return; 
 
     isPaused = !isPaused;
     menuVisible = !menuVisible;

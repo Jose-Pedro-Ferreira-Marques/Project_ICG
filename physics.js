@@ -17,13 +17,12 @@ let groundMesh;
 let startPlatformPosition = new THREE.Vector3(0, 3, 0);
 
 const textureLoader = new THREE.TextureLoader();
-groundTexture = textureLoader.load('./images/lazer.jpg');
+groundTexture = textureLoader.load('images/lazer.jpg');
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set(100, 100);
-groundTexture.offset.set(0, 0); // Needed for scrolling
+groundTexture.offset.set(0, 0);
 
 export function setupPhysics(scene) {
-    // Create visual ground mesh
     const groundGeometry = new THREE.PlaneGeometry(500, 500);
     const groundMaterial = new THREE.MeshStandardMaterial({
         map: groundTexture,
@@ -37,7 +36,6 @@ export function setupPhysics(scene) {
     groundMesh.userData.isGround = true;
     scene.add(groundMesh);
 
-    // Create physical ground body
     const groundShape = new CANNON.Plane();
     const groundBody = new CANNON.Body({
         mass: 0,

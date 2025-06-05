@@ -4,7 +4,7 @@ import { world, playerBody, setupPhysics } from './physics.js';
 import { generateBasicRoom,addCoinToRoom} from './generateRoom.js';
 import { showWinMenu } from './menu.js';
 import {setupCollectibles} from './collectibles.js'
-import { player } from './main.js';
+import { player, camera, renderer } from './main.js';
 
 import {playCoinPickupSound} from'./sounds.js'
 // Scene setup
@@ -13,20 +13,20 @@ scene.background = new THREE.Color(0x87CEEB);
 export const collectibles = [];
 // Load textures
 const textureLoader = new THREE.TextureLoader();
-const platformTexture = textureLoader.load('./images/textures/granite_tile_diff_4k.jpg');
+const platformTexture = textureLoader.load('public/images/textures/granite_tile_diff_4k.jpg');
 platformTexture.wrapS = platformTexture.wrapT = THREE.RepeatWrapping;
 platformTexture.repeat.set(4, 4);
 
-const goaltexture = textureLoader.load('./images/textures/granite_tile_diff_4k.jpg')
+const goaltexture = textureLoader.load('public/images/textures/granite_tile_diff_4k.jpg')
 goaltexture.wrapS = goaltexture.wrapT = THREE.RepeatWrapping;
 goaltexture.repeat.set(4,4);
 const flagTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); // example texture
 
-const wallTexture = textureLoader.load('./images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = textureLoader.load('public/images/textures/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
-const doorTexture = textureLoader.load('./images/textures/wooden_gate_diff_4k.jpg');
+const doorTexture = textureLoader.load('public/images/textures/wooden_gate_diff_4k.jpg');
 doorTexture.wrapS = doorTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
@@ -283,7 +283,7 @@ export function checkCoinCollision(playerBody) {
             coins.splice(i, 1);
             
             collectedCoins++;
-            playCoinPickupSound(); // Add this line to play the sound
+            playCoinPickupSound(); 
             showGameMessage(`Coin collected! (${collectedCoins}/${requiredCoins})`, 1500);
             updateCoinCounter();
             
@@ -294,7 +294,7 @@ export function checkCoinCollision(playerBody) {
         }
     }
 
-    // Check for win condition (standing on goal platform)
+    // Check for win condition
     platforms.forEach(platform => {
         if (platform.mesh.userData.isGoal) {
             const distance = playerBody.position.distanceTo(
@@ -305,8 +305,8 @@ export function checkCoinCollision(playerBody) {
                 )
             );
             
-            if (distance < 5) { // Close enough to the goal platform
-                showWinMenu();
+            if (distance < 5) { 
+                showWinMenu(camera,renderer);
             }
         }
     });
@@ -377,19 +377,15 @@ function unlockDoors() {
 function createBasicRoom(room) {
     room.type = 'basic';
     
-    // Generate the room using templates
     room.platforms = generateBasicRoom(room);
     
-    // Set the start platform if this is the start room
     if (room.isStartRoom) {
         startPlatform = room.platforms[0];
         startPlatform.mesh.userData.isStart = true;
-        // Explicitly mark start room platforms as unsuitable for coins
         room.platforms.forEach(p => p.mesh.userData.isStart = true);
-        return; // Skip coin placement for start room
+        return;
     }
     
-    // Add doors if this is the final room
     if (room.isFinalRoom) {
         room.connections.forEach(connectedRoom => {
             const dx = connectedRoom.x - room.x;
@@ -524,9 +520,8 @@ function createHallway(room1, room2) {
     const wallThickness = 0.5;
     const platformSize = 2;
     const platformThickness = 0.5;
-    // Use the same wall height logic as rooms (15 for normal rooms, room.height for final room)
     const height = room1.isFinalRoom ? room1.height : 
-                  room2.isFinalRoom ? room2.height : 15;
+                  room2.isFinalRoom ? room2.height : 20;  
 
     const dx = room2.x - room1.x;
     const dz = room2.z - room1.z;
@@ -548,7 +543,6 @@ function createHallway(room1, room2) {
 
     const fixedCoord = horizontal ? (room1.z + room2.z) / 2 : (room1.x + room2.x) / 2;
 
-    // Hallway Floor
     const floorPosition = horizontal
         ? new THREE.Vector3(center, 0, fixedCoord)
         : new THREE.Vector3(fixedCoord, 0, center);
@@ -559,7 +553,6 @@ function createHallway(room1, room2) {
 
     createPlatform(floorPosition, floorSize, platformTexture);
 
-    // Hallway Walls
     const wallOffset = hallwayWidth / 2;
 
     const wall1Position = horizontal
@@ -577,7 +570,6 @@ function createHallway(room1, room2) {
     createPlatform(wall1Position, wallSize, wallTexture);
     createPlatform(wall2Position, wallSize, wallTexture);
 
-    // Elevated Platforms
     const platformCount = Math.floor(length / 6);
     const heightOptions = [2, 3, 4];
     for (let i = 0; i < platformCount; i++) {
@@ -632,7 +624,7 @@ export function generateRoomMap() {
         roomSize,
         roomSize,
         roomHeight,
-        true  // This marks it as the start room
+        true  
     );
     rooms.push(startRoom);
     
@@ -775,7 +767,6 @@ export function generateRoomMap() {
 export function setupWorld() {
     setupPhysics(scene);
   
-    // Create UI elements
     coinCountElement = document.createElement('div');
     coinCountElement.style.position = 'absolute';
     coinCountElement.style.top = '20px';
@@ -788,7 +779,6 @@ export function setupWorld() {
     coinCountElement.style.borderRadius = '5px';
     document.body.appendChild(coinCountElement);
     
-    // Position player on the start platform
     if (startPlatform) {
         playerBody.position.set(
             startPlatform.mesh.position.x,
@@ -814,25 +804,21 @@ export function checkPlayerFell() {
 }
 
 export function resetPlayer() {
-    // Clear existing coins
     coins.forEach(coin => {
         scene.remove(coin.mesh);
         world.removeBody(coin.body);
     });
     coins.length = 0;
     
-    // Clear existing collectibles
     collectibles.forEach(collectible => {
         scene.remove(collectible.mesh);
         world.removeBody(collectible.body);
     });
     collectibles.length = 0;
     
-    // Reset coin counter
     collectedCoins = 0;
     updateCoinCounter();
     
-    // Regenerate coins in all rooms
     rooms.forEach(room => {
         if (room.connections.length === 1 && !room.isStartRoom && !room.isFinalRoom) {
             addCoinToRoom(room, room.platforms);
@@ -840,10 +826,8 @@ export function resetPlayer() {
     });
     player.canDoubleJump = false;
     player.hasDoubleJumped = false;
-    // Reset collectibles
     setupCollectibles(scene);
     
-    // Reset player position and abilities
     if (startPlatform) {
         playerBody.position.set(
             startPlatform.mesh.position.x,
@@ -854,7 +838,6 @@ export function resetPlayer() {
         playerBody.angularVelocity.set(0, 0, 0);
     }
     
-    // Reset player abilities
  
     
     showGameMessage('Player reset - coins and abilities reset!', 2000);
@@ -869,7 +852,6 @@ export function regenerateMap() {
 
 
 function createFlag(position) {
-    // Flagpole
     const poleHeight = 6;
     const poleRadius = 0.1;
     const poleGeometry = new THREE.CylinderGeometry(poleRadius, poleRadius, poleHeight, 8);
@@ -881,14 +863,12 @@ function createFlag(position) {
     poleMesh.receiveShadow = true;
     scene.add(poleMesh);
 
-    // Flag geometry: Plane subdivided for waving
     const flagWidth = 2;
     const flagHeight = 1.5;
     const widthSegments = 10;
     const heightSegments = 5;
     const flagGeometry = new THREE.PlaneGeometry(flagWidth, flagHeight, widthSegments, heightSegments);
 
-    // Shift flag geometry so left edge is at x=0 (instead of centered)
     flagGeometry.translate(flagWidth / 2, 0, 0);
 
     const flagMaterial = new THREE.MeshStandardMaterial({
@@ -900,9 +880,8 @@ function createFlag(position) {
 
     const flagMesh = new THREE.Mesh(flagGeometry, flagMaterial);
 
-    // Position flag so it aligns flush with the pole surface
     flagMesh.position.set(
-        position.x + poleRadius,                // flush with pole surface
+        position.x + poleRadius,               
         position.y + poleHeight - flagHeight / 2,
         position.z
     );
@@ -910,12 +889,10 @@ function createFlag(position) {
     flagMesh.castShadow = true;
     flagMesh.receiveShadow = true;
 
-    // Rotate flag slightly to hang naturally
     flagMesh.rotation.y = Math.PI / 6;
 
     scene.add(flagMesh);
 
-    // Animate flag vertices to simulate waving
     const clock = new THREE.Clock();
 
     function animateFlag() {
@@ -926,8 +903,7 @@ function createFlag(position) {
             const x = positionAttr.getX(i);
             const y = positionAttr.getY(i);
 
-            // Wave function: sine wave moving with time,
-            // amplitude fades with height on flag
+       
             const wave = 0.1 * Math.sin(5 * x + time * 3) * (1 - y / flagHeight);
             positionAttr.setZ(i, wave);
         }

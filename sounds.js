@@ -6,14 +6,12 @@ let isWalking = false;
 let coinPickupSound;
 let footstepInterval;
 let lastFootstepTime = 0;
-const footstepDelay = 400; // Time between footsteps in ms
+const footstepDelay = 400; 
 let grappleSound, collectibleSound;
 export function setupSounds(camera) {
-    // Create audio listener
     listener = new THREE.AudioListener();
     camera.add(listener);
 
-    // Jump sound
     jumpSound = new THREE.Audio(listener);
     audioLoader.load('sound/poppop.ai - jumping sound.mp3', (buffer) => {
         jumpSound.setBuffer(buffer);
@@ -21,7 +19,6 @@ export function setupSounds(camera) {
         jumpSound.setLoop(false);
     });
 
-    // Footstep sound
     footstepSound = new THREE.Audio(listener);
     audioLoader.load('sound/walking.mp3', (buffer) => {
         footstepSound.setBuffer(buffer);
@@ -29,7 +26,6 @@ export function setupSounds(camera) {
         footstepSound.setLoop(false);
     });
 
-    // Landing sound
     landingSound = new THREE.Audio(listener);
     audioLoader.load('sounds/walking.mp3', (buffer) => {
         landingSound.setBuffer(buffer);
@@ -38,7 +34,7 @@ export function setupSounds(camera) {
     });
 
     coinPickupSound = new THREE.Audio(listener);
-    audioLoader.load('sound/coin.mp3', (buffer) => { // Replace with your actual coin sound file
+    audioLoader.load('sound/coin.mp3', (buffer) => { 
         coinPickupSound.setBuffer(buffer);
         coinPickupSound.setVolume(0.7);
         coinPickupSound.setLoop(false);
@@ -51,7 +47,6 @@ export function setupSounds(camera) {
         grappleSound.setLoop(false);
     });
 
-    // Collectible sound
     collectibleSound = new THREE.Audio(listener);
     audioLoader.load('sound/item-pick-up-38258.mp3', (buffer) => {
         collectibleSound.setBuffer(buffer);
@@ -100,10 +95,8 @@ export function startFootsteps() {
     if (isWalking) return;
     isWalking = true;
     
-    // Play first footstep immediately
     playFootstep();
     
-    // Set up interval for continuous footsteps
     footstepInterval = setInterval(() => {
         playFootstep();
     }, footstepDelay);

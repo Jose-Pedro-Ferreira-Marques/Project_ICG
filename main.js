@@ -12,8 +12,8 @@ import { createGun } from './gun.js';
 import { setupMenu, toggleMenu, getIsPaused, deathMenu } from './menu.js';
 import { setupSounds } from './sounds.js';
 // Renderer & Camera
-const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-const renderer = new THREE.WebGLRenderer({ antialias: true });
+export const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+export const renderer = new THREE.WebGLRenderer({ antialias: true });
 renderer.setSize(window.innerWidth, window.innerHeight);
 renderer.shadowMap.enabled = true;
 document.body.appendChild(renderer.domElement);
@@ -41,7 +41,7 @@ setupGrappling(scene, camera, playerBody, world, grapplePoints);
 setupCrosshair();
 createGun(scene, camera);
 setupMenu(camera, renderer);
-setupSounds(camera); // Initialize sound system
+setupSounds(camera); 
 
 // Update Loop
 function update() {
