@@ -17,7 +17,7 @@ let groundMesh;
 let startPlatformPosition = new THREE.Vector3(0, 3, 0);
 
 const textureLoader = new THREE.TextureLoader();
-groundTexture = textureLoader.load('./public/images/lazer.jpg');
+groundTexture = textureLoader.load('public/images/lazer.jpg');
 groundTexture.wrapS = groundTexture.wrapT = THREE.RepeatWrapping;
 groundTexture.repeat.set(100, 100);
 groundTexture.offset.set(0, 0);
