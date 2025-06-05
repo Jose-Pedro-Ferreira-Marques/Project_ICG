@@ -20,7 +20,7 @@ platformTexture.repeat.set(4, 4);
 const goaltexture = textureLoader.load('public/images/granite_tile_diff_4k.jpg')
 goaltexture.wrapS = goaltexture.wrapT = THREE.RepeatWrapping;
 goaltexture.repeat.set(4,4);
-const flagTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); // example texture
+const flagTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); 
 
 const wallTexture = textureLoader.load('public/images/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
