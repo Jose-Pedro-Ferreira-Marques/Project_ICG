@@ -22,7 +22,7 @@ goaltexture.wrapS = goaltexture.wrapT = THREE.RepeatWrapping;
 goaltexture.repeat.set(4,4);
 const flagTexture = new THREE.TextureLoader().load('https://threejs.org/examples/textures/uv_grid_opengl.jpg'); // example texture
 
-const wallTexture = textureLoader.load('public/images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = textureLoader.load('public/images/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
