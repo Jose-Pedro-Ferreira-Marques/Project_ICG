@@ -3,11 +3,11 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { createPlatform, createGrapplePoint, createCoin, platforms ,requiredCoins} from './world.js';
 
-const platformTexture = new THREE.TextureLoader().load('images/textures/granite_tile_diff_4k.jpg');
+const platformTexture = new THREE.TextureLoader().load('./images/textures/granite_tile_diff_4k.jpg');
 platformTexture.wrapS = platformTexture.wrapT = THREE.RepeatWrapping;
 platformTexture.repeat.set(4, 4);
 
-const wallTexture = new THREE.TextureLoader().load('images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = new THREE.TextureLoader().load('./images/textures/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
@@ -494,8 +494,8 @@ export function generateBasicRoom(room) {
     return roomPlatforms;
 }
 function addWallsAndDoors(room) {
-    // Increased wall height from 8 to 15
-    const wallHeight = room.isFinalRoom ? room.height : 15;  // Changed from 8 to 15
+    // Increased wall height from 15 to 20
+    const wallHeight = room.isFinalRoom ? room.height : 20;  // Changed from 15 to 20
     const wallThickness = 1;
     const openingWidth = 4;
 

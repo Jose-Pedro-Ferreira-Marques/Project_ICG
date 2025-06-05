@@ -2,8 +2,8 @@ import * as THREE from 'three';
 
 export function createGun(scene, camera) {
     const textureLoader = new THREE.TextureLoader();
-    const gunTexture = textureLoader.load('images/textures/corrugated_iron_03_diff_4k.jpg');
-    const handletexture = textureLoader.load('images/textures/wooden_gate_diff_4k.jpg');
+    const gunTexture = textureLoader.load('./images/textures/corrugated_iron_03_diff_4k.jpg');
+    const handletexture = textureLoader.load('./images/textures/wooden_gate_diff_4k.jpg');
     
     const gunMaterial = new THREE.MeshStandardMaterial({ 
         map: gunTexture, 
