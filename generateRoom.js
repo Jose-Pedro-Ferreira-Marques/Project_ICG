@@ -2,11 +2,11 @@ import * as THREE from 'three';
 import * as CANNON from 'cannon-es';
 import { createPlatform, createGrapplePoint, createCoin, platforms ,requiredCoins} from './world.js';
 
-const platformTexture = new THREE.TextureLoader().load('public/images/textures/granite_tile_diff_4k.jpg');
+const platformTexture = new THREE.TextureLoader().load('./public/images/textures/granite_tile_diff_4k.jpg');
 platformTexture.wrapS = platformTexture.wrapT = THREE.RepeatWrapping;
 platformTexture.repeat.set(4, 4);
 
-const wallTexture = new THREE.TextureLoader().load('public/images/textures/painted_plaster_wall_disp_4k.png');
+const wallTexture = new THREE.TextureLoader().load('./public/images/textures/painted_plaster_wall_disp_4k.png');
 wallTexture.wrapS = wallTexture.wrapT = THREE.RepeatWrapping;
 wallTexture.repeat.set(4, 4);
 
